@@ -40,6 +40,10 @@ import (
 	"github.com/m3db/m3x/instrument"
 )
 
+const (
+	defaultSDTimeout = 10 * time.Minute
+)
+
 var (
 	errNilRetention  = errors.New("namespace retention options cannot be empty")
 	errMissingConfig = errors.New("must supply service or static config")
@@ -123,8 +127,11 @@ type ConfigurationParameters struct {
 
 // Configure creates a new ConfigureResults
 func (c Configuration) Configure(cfgParams ConfigurationParameters) (ConfigureResults, error) {
-
 	var emptyConfig ConfigureResults
+
+	if c.KV.Client.SDConfig.InitTimeout == 0 {
+		c.KV.Client.SDConfig.InitTimeout = defaultSDTimeout
+	}
 
 	configSvcClientOpts := c.KV.Client.NewOptions().
 		SetInstrumentOptions(cfgParams.InstrumentOpts).
