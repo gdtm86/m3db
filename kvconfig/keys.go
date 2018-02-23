@@ -32,4 +32,12 @@ const (
 	// ClusterNewSeriesInsertLimitKey is the KV config key for the runtime
 	// configuration specifying a hard limit for a cluster new series insertions.
 	ClusterNewSeriesInsertLimitKey = "m3db.node.cluster-new-series-insert-limit"
+
+	// EmbedKVMode is the config value to indicate that KV is embedded within
+	// M3DB
+	EmbedKVMode = "embed"
+
+	// ClusteredKVMode is the config value to indicate that there is a separate
+	// KV cluster
+	ClusteredKVMode = "clustered"
 )

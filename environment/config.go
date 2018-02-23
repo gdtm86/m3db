@@ -56,6 +56,9 @@ type Configuration struct {
 
 	// KV sets the kv configuration for either a clustered or embedded etcd
 	KV *KVConfig `yaml:"kv"`
+
+	// NamespaceTimeout is the timeout duration for setting a namespace
+	NamespaceTimeout time.Duration `yaml:"namespace-timeout"`
 }
 
 // KVConfig sets the configs for the KV client and server
@@ -67,14 +70,13 @@ type KVConfig struct {
 
 // EmbeddedKV defines specific fields for the embedded kv server
 type EmbeddedKV struct {
-	Dir              string        `yaml:"dir"`
-	APUrls           []string      `yaml:"initial-advertise-peer-urls"`
-	ACUrls           []string      `yaml:"advertise-client-urls"`
-	LPUrls           []string      `yaml:"listen-peer-urls"`
-	LCUrls           []string      `yaml:"listen-client-urls"`
-	InitialCluster   string        `yaml:"initial-cluster"`
-	Name             string        `yaml:"name"`
-	NamespaceTimeout time.Duration `yaml:"namespace-timeout"`
+	Dir            string   `yaml:"dir"`
+	APUrls         []string `yaml:"initial-advertise-peer-urls"`
+	ACUrls         []string `yaml:"advertise-client-urls"`
+	LPUrls         []string `yaml:"listen-peer-urls"`
+	LCUrls         []string `yaml:"listen-client-urls"`
+	InitialCluster string   `yaml:"initial-cluster"`
+	Name           string   `yaml:"name"`
 }
 
 // StaticConfiguration is used for running M3DB with a static config

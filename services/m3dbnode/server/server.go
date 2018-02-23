@@ -76,6 +76,7 @@ import (
 const (
 	bootstrapConfigInitTimeout = 10 * time.Second
 	serverGracefulCloseTimeout = 10 * time.Second
+	namespaceInitTimeout       = 10 * time.Minute
 )
 
 // RunOptions provides options for running the server
@@ -116,7 +117,7 @@ func Run(runOpts RunOptions) {
 		logger.Fatal("kv config cannot be nil")
 	}
 
-	if cfg.EnvironmentConfig.KV.Mode == "embed" {
+	if cfg.EnvironmentConfig.KV.Mode == kvconfig.EmbedKVMode {
 		kvCfg := cfg.EnvironmentConfig.KV.Server
 		if kvCfg != nil {
 			etcdCfg, err := environment.GetETCDConfig(kvCfg)
@@ -281,10 +282,15 @@ func Run(runOpts RunOptions) {
 	if cfg.EnvironmentConfig.Static == nil {
 		logger.Info("creating dynamic config service client with m3cluster")
 
+		namespaceTimeout := cfg.EnvironmentConfig.NamespaceTimeout
+		if namespaceTimeout <= 0 {
+			namespaceTimeout = namespaceInitTimeout
+		}
+
 		envCfg, err = cfg.EnvironmentConfig.Configure(environment.ConfigurationParameters{
 			InstrumentOpts:   iopts,
 			HashingSeed:      cfg.Hashing.Seed,
-			NamespaceTimeout: cfg.EnvironmentConfig.KV.Server.NamespaceTimeout,
+			NamespaceTimeout: namespaceTimeout,
 		})
 		if err != nil {
 			logger.Fatalf("could not initialize dynamic config: %v", err)
